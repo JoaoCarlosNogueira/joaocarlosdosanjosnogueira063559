@@ -1,6 +1,6 @@
 package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.config;
 
-import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.repository.UserRepository; // Importe seu repository
+import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
