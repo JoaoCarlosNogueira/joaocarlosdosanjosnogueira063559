@@ -43,7 +43,6 @@ public class SecurityConfig {
                                 "/configuration/security",
                                 "/api-docs/**"
                         ).permitAll()
-
                         .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
