@@ -41,7 +41,11 @@ public class SecurityConfig {
                                 "/webjars/**",
                                 "/configuration/ui",
                                 "/configuration/security",
-                                "/api-docs/**"
+                                "/api-docs/**",
+                                "/v1/artists/**",
+                                "/v1/albums/**",
+                                "/v1/regionais/**"
+
                         ).permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated()
