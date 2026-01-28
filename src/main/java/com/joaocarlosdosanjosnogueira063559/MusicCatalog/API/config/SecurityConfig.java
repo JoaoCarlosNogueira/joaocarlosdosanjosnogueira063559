@@ -32,7 +32,6 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        // === LIBERAÇÃO TOTAL DO SWAGGER ===
                         .requestMatchers(
                                 "/v3/api-docs",
                                 "/v3/api-docs/**",

@@ -27,10 +27,7 @@ public class OpenApiConfig {
                 return new OpenAPI()
                         .info(new Info().title("Music Catalog API").version("1.0").description("..."))
                         .tags(Arrays.asList(
-                                // O NOME AQUI DEVE SER IGUAL AO DO CONTROLLER
                                 new Tag().name("01. Auth").description("Endpoints de Autenticação"),
-
-                                // As outras podem ficar sem número, elas virão depois em ordem alfabética
                                 new Tag().name("Álbuns").description("Gerenciamento de Álbuns"),
                                 new Tag().name("Artistas").description("Gerenciamento de Artistas"),
                                 new Tag().name("Regionais").description("Gerenciamento de Regionais")
