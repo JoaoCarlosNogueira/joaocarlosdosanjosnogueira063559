@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
+import java.security.MessageDigest;
+import java.util.Base64;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -34,40 +37,40 @@ public class MinioService {
         }
     }
 
-    public String uploadFile(MultipartFile file) {
+    public String uploadFile(MultipartFile file) throws Exception {
+        String fileHash = generateHash(file.getInputStream());
+        String fileName = fileHash + "-" + file.getOriginalFilename();
 
-        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        criarBucketSeNaoExistir();
 
-        try {
-            criarBucketSeNaoExistir();
+        minioClient.putObject(
+                PutObjectArgs.builder()
+                        .bucket(bucketName)
+                        .object(fileName)
+                        .stream(file.getInputStream(), file.getSize(), -1)
+                        .contentType(file.getContentType())
+                        .build()
+        );
 
-            minioClient.putObject(
-                    PutObjectArgs.builder()
-                            .bucket(bucketName)
-                            .object(fileName)
-                            .stream(file.getInputStream(), file.getSize(), -1)
-                            .contentType(file.getContentType())
-                            .build()
-            );
-
-            return fileName;
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao fazer upload para o MinIO", e);
-        }
+        return fileName;
     }
 
-    public String generateFileUrl(String fileName) {
-        try {
-            return minioClient.getPresignedObjectUrl(
-                    GetPresignedObjectUrlArgs.builder()
-                            .bucket(bucketName)
-                            .object(fileName)
-                            .method(Method.GET)
-                            .expiry(30, TimeUnit.MINUTES)
-                            .build()
-            );
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao gerar URL assinada", e);
-        }
+    private String generateHash(InputStream inputStream) throws Exception {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hashBytes = digest.digest(inputStream.readAllBytes());
+        return Base64.getEncoder().encodeToString(hashBytes);
     }
+
+    public String generateFileUrl(String fileName) throws Exception {
+        String presignedUrl = minioClient.getPresignedObjectUrl(
+                GetPresignedObjectUrlArgs.builder()
+                        .bucket(bucketName)
+                        .object(fileName)
+                        .method(Method.GET)
+                        .expiry(30, TimeUnit.MINUTES)
+                        .build()
+        );
+        return presignedUrl;
+    }
+
 }
