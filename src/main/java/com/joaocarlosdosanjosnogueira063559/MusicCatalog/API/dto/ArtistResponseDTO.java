@@ -1,7 +1,10 @@
 package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class ArtistResponseDTO {
 
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
     private String name;
 
