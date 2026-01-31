@@ -1,6 +1,10 @@
 package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,11 +15,14 @@ public class Album {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotBlank(message = "O título do álbum é obrigatório")
+    @Size(min = 2, max = 150, message = "O título deve ter entre 2 e 150 caracteres")
+    @Column(nullable = false, length = 150)
     private String title;
 
     private String coverImageId;
 
+    @NotEmpty(message = "O álbum deve ter pelo menos um artista")
     @ManyToMany
     @JoinTable(
             name = "tb_artist_album",
