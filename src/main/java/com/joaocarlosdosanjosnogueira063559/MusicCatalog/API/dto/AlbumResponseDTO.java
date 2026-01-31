@@ -1,12 +1,16 @@
 package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Set;
 
 public class AlbumResponseDTO {
 
     private Long id;
     private String title;
+    @Schema(description = "Arquivo de imagem da capa")
     private String coverUrl;
+    @Schema(description = "Lista de IDs dos artistas", example = "[1]")
     private Set<ArtistResponseDTO> artists;
 
     public AlbumResponseDTO() {}
