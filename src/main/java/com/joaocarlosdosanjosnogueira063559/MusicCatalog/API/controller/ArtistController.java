@@ -28,7 +28,6 @@ public class ArtistController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED) // Retorna 201 Created
     @Operation(summary = "Cadastra um novo artista")
     public ArtistResponseDTO create(@RequestBody ArtistResponseDTO request) {
         return artistService.create(request.getName());
