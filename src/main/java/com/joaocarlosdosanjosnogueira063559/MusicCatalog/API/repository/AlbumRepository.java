@@ -11,6 +11,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AlbumRepository extends JpaRepository<Album, Long> {
 
-    @Query("SELECT a FROM Album a JOIN a.artists ar WHERE LOWER(ar.name) LIKE LOWER(CONCAT('%', :artistName, '%'))")
+    @Query("SELECT DISTINCT a FROM Album a " +
+            "JOIN a.artists ar " +
+            "WHERE LOWER(ar.name) LIKE LOWER(CONCAT('%', :artistName, '%'))")
     Page<Album> findByArtistName(@Param("artistName") String artistName, Pageable pageable);
+
 }
