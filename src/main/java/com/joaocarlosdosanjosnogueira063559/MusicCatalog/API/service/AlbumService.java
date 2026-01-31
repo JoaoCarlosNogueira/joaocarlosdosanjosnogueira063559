@@ -34,26 +34,35 @@ public class AlbumService {
 
     @Transactional
     public AlbumResponseDTO create(String title, List<Long> artistIds, MultipartFile file) {
+
+        String fileName = file.getOriginalFilename();
+        String contentType = file.getContentType();
+
+        boolean isValidImage = (contentType != null && contentType.startsWith("image/")) ||
+                (fileName != null && fileName.toLowerCase().matches(".*\\.(jpg|jpeg|png|webp|gif)$"));
+
+        if (!isValidImage) {
+            throw new IllegalArgumentException("Arquivo inválido. Formatos aceitos: JPG, PNG, WEBP ou GIF.");
+        }
+
+        List<Artist> artists = artistRepository.findAllById(artistIds);
+        if (artists.size() != artistIds.size()) {
+            throw new RuntimeException("Um ou mais IDs de artistas fornecidos não existem");
+        }
+
         String coverId;
         try {
             coverId = minioService.uploadFile(file);
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao fazer upload da imagem", e);
-        }
-
-        List<Artist> artists = artistRepository.findAllById(artistIds);
-        if (artists.isEmpty()) {
-            throw new RuntimeException("Nenhum artista encontrado com os IDs fornecidos");
+            throw new RuntimeException("Falha no upload da imagem para o storage", e);
         }
 
         Album album = new Album();
-        album.setTitle(title);
+        album.setTitle(title.trim());
         album.setCoverImageId(coverId);
         album.setArtists(new HashSet<>(artists));
 
-        Album savedAlbum = albumRepository.save(album);
-
-        return toDto(savedAlbum);
+        return toDto(albumRepository.save(album));
     }
 
     @Transactional
@@ -61,13 +70,13 @@ public class AlbumService {
         return albumRepository.findById(id)
                 .map(album -> {
                     if (title != null && !title.isBlank()) {
-                        album.setTitle(title);
+                        album.setTitle(title.trim());
                     }
 
                     if (artistIds != null && !artistIds.isEmpty()) {
                         List<Artist> artists = artistRepository.findAllById(artistIds);
-                        if (artists.isEmpty()) {
-                            throw new RuntimeException("Artistas não encontrados");
+                        if (artists.size() != artistIds.size()) {
+                            throw new RuntimeException("Lista de artistas contém IDs inválidos");
                         }
                         album.setArtists(new HashSet<>(artists));
                     }
@@ -75,9 +84,10 @@ public class AlbumService {
                     return albumRepository.save(album);
                 })
                 .map(this::toDto)
-                .orElseThrow(() -> new RuntimeException("Álbum não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Álbum com ID " + id + " não encontrado"));
     }
 
+    @Transactional(readOnly = true)
     public Page<AlbumResponseDTO> findAll(String artistName, Pageable pageable) {
         Page<Album> page;
 
@@ -91,22 +101,23 @@ public class AlbumService {
     }
 
     private AlbumResponseDTO toDto(Album album) {
-        String presignedUrl = null;
+        String coverUrl = null;
         try {
             if (album.getCoverImageId() != null) {
-                presignedUrl = minioService.generateFileUrl(album.getCoverImageId());
+                coverUrl = minioService.generateFileUrl(album.getCoverImageId());
             }
         } catch (Exception e) {
-            presignedUrl = null;
+            coverUrl = null;
         }
 
         Set<ArtistResponseDTO> artistDtos = album.getArtists().stream()
                 .map(artist -> new ArtistResponseDTO(artist.getId(), artist.getName()))
                 .collect(Collectors.toSet());
+
         return new AlbumResponseDTO(
                 album.getId(),
                 album.getTitle(),
-                presignedUrl,
+                coverUrl,
                 artistDtos
         );
     }
