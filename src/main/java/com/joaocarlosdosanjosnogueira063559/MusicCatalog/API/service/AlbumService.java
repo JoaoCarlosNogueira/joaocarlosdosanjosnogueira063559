@@ -8,6 +8,7 @@ import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.repository.AlbumRep
 import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.repository.ArtistRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,13 +24,13 @@ public class AlbumService {
     private final AlbumRepository albumRepository;
     private final ArtistRepository artistRepository;
     private final MinioService minioService;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public AlbumService(AlbumRepository albumRepository,
-                        ArtistRepository artistRepository,
-                        MinioService minioService) {
+    public AlbumService(AlbumRepository albumRepository, ArtistRepository artistRepository, MinioService minioService,SimpMessagingTemplate messagingTemplate ) {
         this.albumRepository = albumRepository;
         this.artistRepository = artistRepository;
         this.minioService = minioService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @Transactional
@@ -62,7 +63,16 @@ public class AlbumService {
         album.setCoverImageId(coverId);
         album.setArtists(new HashSet<>(artists));
 
-        return toDto(albumRepository.save(album));
+        Album savedAlbum = albumRepository.save(album);
+        AlbumResponseDTO response = toDto(savedAlbum);
+
+        try {
+            messagingTemplate.convertAndSend("/topic/new-album", response);
+        } catch (Exception e) {
+            System.err.println("Erro ao enviar notificação WebSocket: " + e.getMessage());
+        }
+
+        return response;
     }
 
     @Transactional
