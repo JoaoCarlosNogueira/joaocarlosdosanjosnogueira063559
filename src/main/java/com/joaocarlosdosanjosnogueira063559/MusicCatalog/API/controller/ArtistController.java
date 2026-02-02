@@ -33,6 +33,12 @@ public class ArtistController {
         return artistService.create(request.getName());
     }
 
+    @PutMapping("/{id}")
+    @Operation(summary = "Atualiza um artista existente", description = "Substitui os dados do artista informado pelo ID.")
+    public ArtistResponseDTO update(@PathVariable Long id, @RequestBody ArtistResponseDTO request) {
+        return artistService.update(id, request.getName());
+    }
+
     @GetMapping
     @Operation(summary = "Lista artistas paginados e ordenados")
     public Page<ArtistResponseDTO> findAll(
