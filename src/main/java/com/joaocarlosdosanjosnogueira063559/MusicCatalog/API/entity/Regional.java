@@ -9,7 +9,7 @@ public class Regional {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private Long externalId;
 
     @Column(nullable = false)
