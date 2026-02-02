@@ -46,11 +46,20 @@ public class RegionalService {
         }
     }
 
-        ativasLocais.forEach(local -> {
-            if (!mapExternas.containsKey(local.getExternalId())) {
-                local.setAtivo(false);
-                regionalRepository.save(local);
-            }
+    @Transactional
+    public Regional create(String nome) {
+        Regional nova = new Regional();
+        nova.setNome(nome);
+        nova.setAtivo(true);
+        nova.setExternalId(null);
+        return repository.save(nova);
+    }
+
+    @Transactional
+    public void updateStatus(Long id, boolean status) {
+        repository.findById(id).ifPresent(r -> {
+            r.setAtivo(status);
+            repository.save(r);
         });
     }
 }
