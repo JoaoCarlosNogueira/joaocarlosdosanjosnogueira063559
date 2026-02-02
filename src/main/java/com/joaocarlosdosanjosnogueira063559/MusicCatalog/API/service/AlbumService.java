@@ -76,7 +76,7 @@ public class AlbumService {
     }
 
     @Transactional
-    public AlbumResponseDTO update(Long id, String title, List<Long> artistIds) {
+    public AlbumResponseDTO update(Long id, String title, List<Long> artistIds, MultipartFile file) {
         return albumRepository.findById(id)
                 .map(album -> {
                     if (title != null && !title.isBlank()) {
@@ -89,6 +89,15 @@ public class AlbumService {
                             throw new RuntimeException("Lista de artistas contém IDs inválidos");
                         }
                         album.setArtists(new HashSet<>(artists));
+                    }
+
+                    if (file != null && !file.isEmpty()) {
+                        try {
+                            String newCoverId = minioService.uploadFile(file);
+                            album.setCoverImageId(newCoverId);
+                        } catch (Exception e) {
+                            throw new RuntimeException("Falha ao atualizar a imagem no storage", e);
+                        }
                     }
 
                     return albumRepository.save(album);
