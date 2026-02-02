@@ -1,6 +1,5 @@
 package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.controller;
 
-import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.dto.AlbumResponseDTO;
 import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.dto.ArtistResponseDTO;
 import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.service.ArtistService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 
