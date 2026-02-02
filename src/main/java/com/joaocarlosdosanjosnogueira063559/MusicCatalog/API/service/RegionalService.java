@@ -4,57 +4,47 @@ import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.dto.RegionalExterna
 import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.entity.Regional;
 import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.repository.RegionalRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class RegionalService {
-    private final RegionalRepository regionalRepository;
+    private final RegionalRepository repository;
     private final RestTemplate restTemplate;
-
-    public RegionalService(RegionalRepository regionalRepository, RestTemplateBuilder builder) {
-        this.regionalRepository = regionalRepository;
-        this.restTemplate = builder.build();
-    }
 
     @Transactional
     public void syncRegionais() {
         String url = "https://integrador-argus-api.geia.vip/v1/regionais";
-
         RegionalExternalDTO[] response = restTemplate.getForObject(url, RegionalExternalDTO[].class);
+
         if (response == null) return;
 
-        Map<Long, RegionalExternalDTO> mapExternas = Arrays.stream(response)
-                .collect(Collectors.toMap(RegionalExternalDTO::id, Function.identity()));
+        List<Long> idsExternos = Arrays.stream(response).map(RegionalExternalDTO::id).toList();
 
-        List<Regional> ativasLocais = regionalRepository.findByAtivoTrue();
-        Map<Long, Regional> mapLocais = ativasLocais.stream()
-                .collect(Collectors.toMap(Regional::getExternalId, Function.identity()));
+        repository.inativarSeNaoPresentes(idsExternos);
 
-        mapExternas.values().forEach(externa -> {
-            Regional local = mapLocais.get(externa.id());
+        for (RegionalExternalDTO externa : response) {
+            Optional<Regional> localAtiva = repository.findByExternalIdAndAtivoTrue(externa.id());
 
-            if (local == null) {
-                Regional novo = new Regional(externa.id(), externa.nome(), true);
-                regionalRepository.save(novo);
-            } else {
-                if (!local.getNome().equals(externa.nome())) {
-                    local.setAtivo(false);
-                    regionalRepository.save(local);
+            if (localAtiva.isEmpty()) {
+                repository.save(new Regional(externa.id(), externa.nome(), true));
+            } else if (!localAtiva.get().getNome().equals(externa.nome())) {
+                Regional antiga = localAtiva.get();
+                antiga.setAtivo(false);
+                repository.save(antiga);
 
-                    Regional novoVersao = new Regional(externa.id(), externa.nome(), true);
-                    regionalRepository.save(novoVersao);
-                }
+                repository.save(new Regional(externa.id(), externa.nome(), true));
             }
-        });
+        }
+    }
 
         ativasLocais.forEach(local -> {
             if (!mapExternas.containsKey(local.getExternalId())) {
