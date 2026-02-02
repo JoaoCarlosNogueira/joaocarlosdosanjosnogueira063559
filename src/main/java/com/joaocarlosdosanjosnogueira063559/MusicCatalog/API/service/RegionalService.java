@@ -62,4 +62,9 @@ public class RegionalService {
             repository.save(r);
         });
     }
+
+    @Transactional
+    public Page<Regional> listByStatus(boolean status, Pageable pageable) {
+        return repository.findByStatus(status, pageable);
+    }
 }
