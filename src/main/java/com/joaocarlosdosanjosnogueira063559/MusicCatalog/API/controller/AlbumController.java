@@ -34,6 +34,13 @@ public class AlbumController {
         return albumService.create(title, artistIds, file);
     }
 
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Atualiza o álbum", description = "Permite atualizar título, artistas e a imagem da capa.")
+    public AlbumResponseDTO update(@PathVariable Long id, @RequestParam(value = "title", required = false) String title, @RequestParam(value = "artistIds", required = false) List<Long> artistIds,
+                                   @RequestParam(value = "file", required = false) MultipartFile file) {
+        return albumService.update(id, title, artistIds, file);
+    }
+
     @GetMapping
     @Operation(summary = "Lista álbuns paginados",
             description = "Permite filtrar por nome do artista e paginação")
