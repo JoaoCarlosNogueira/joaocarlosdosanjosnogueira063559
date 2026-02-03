@@ -1,4 +1,4 @@
-package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.config;
+package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.config.app;
 
 import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

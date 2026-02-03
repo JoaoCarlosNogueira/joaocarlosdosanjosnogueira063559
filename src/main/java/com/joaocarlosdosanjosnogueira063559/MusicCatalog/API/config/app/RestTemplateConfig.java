@@ -1,4 +1,4 @@
-package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.config;
+package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.config.app;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;

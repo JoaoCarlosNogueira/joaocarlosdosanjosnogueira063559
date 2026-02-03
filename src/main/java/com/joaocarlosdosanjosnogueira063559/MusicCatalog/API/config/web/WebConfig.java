@@ -1,4 +1,4 @@
-package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.config;
+package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.config.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;

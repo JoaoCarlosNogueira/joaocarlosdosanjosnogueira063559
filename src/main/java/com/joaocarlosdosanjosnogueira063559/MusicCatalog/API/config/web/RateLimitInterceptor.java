@@ -1,4 +1,4 @@
-package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.config;
+package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.config.web;
 
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;

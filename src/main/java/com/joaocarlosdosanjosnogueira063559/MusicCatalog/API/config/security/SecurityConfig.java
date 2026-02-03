@@ -1,4 +1,4 @@
-package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.config;
+package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.config.security;
 
 import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;

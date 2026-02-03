@@ -1,4 +1,4 @@
-package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.config;
+package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.config.cloud;
 
 import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Value;
