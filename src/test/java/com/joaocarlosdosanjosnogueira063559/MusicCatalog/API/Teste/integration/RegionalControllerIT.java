@@ -1,8 +1,8 @@
 package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.Teste.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.auth.AuthenticationRequest;
-import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.auth.AuthenticationResponse;
+import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.dto.auth.AuthenticationRequestDTO;
+import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.dto.auth.AuthenticationResponseDTO;
 import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.dto.RegionalExternalDTO;
 import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.entity.Regional;
 import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.entity.User;
@@ -59,13 +59,13 @@ public class RegionalControllerIT {
     }
 
     private String getAccessToken(String email, String password) throws Exception {
-        AuthenticationRequest authRequest = new AuthenticationRequest(email, password);
+        AuthenticationRequestDTO authRequest = new AuthenticationRequestDTO(email, password);
         String response = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(authRequest)))
                 .andReturn().getResponse().getContentAsString();
 
-        return objectMapper.readValue(response, AuthenticationResponse.class).getAccessToken();
+        return objectMapper.readValue(response, AuthenticationResponseDTO.class).getAccessToken();
     }
 
     @Test

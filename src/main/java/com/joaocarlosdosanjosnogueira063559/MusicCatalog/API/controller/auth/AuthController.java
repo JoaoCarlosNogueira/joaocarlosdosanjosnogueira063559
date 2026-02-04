@@ -1,7 +1,12 @@
-package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.auth;
+package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.controller.auth;
 
+import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.dto.auth.AuthenticationRequestDTO;
+import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.dto.auth.AuthenticationResponseDTO;
+import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.dto.auth.RefreshRequestDTO;
+import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.dto.auth.RegisterRequestDTO;
 import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.entity.RefreshToken;
 import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.security.RefreshTokenService;
+import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.service.auth.AuthenticationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -23,23 +28,23 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@Valid  @RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthenticationResponseDTO> register(@Valid  @RequestBody RegisterRequestDTO request) {
         return ResponseEntity.ok(service.register(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> authenticate(@Valid @RequestBody AuthenticationRequest request) {
+    public ResponseEntity<AuthenticationResponseDTO> authenticate(@Valid @RequestBody AuthenticationRequestDTO request) {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<AuthenticationResponse> refresh(@RequestBody RefreshRequest request) {
+    public ResponseEntity<AuthenticationResponseDTO> refresh(@RequestBody RefreshRequestDTO request) {
         return refreshTokenService.findByToken(request.getRefreshToken())
                 .map(refreshTokenService::verifyExpiration)
                 .map(RefreshToken::getUser)
                 .map(user -> {
                     String accessToken = service.generateToken(user);
-                    return ResponseEntity.ok(new AuthenticationResponse(accessToken, request.getRefreshToken()));
+                    return ResponseEntity.ok(new AuthenticationResponseDTO(accessToken, request.getRefreshToken()));
                 })
                 .orElseThrow(() -> new RuntimeException("Refresh token inválido ou não encontrado!"));
     }

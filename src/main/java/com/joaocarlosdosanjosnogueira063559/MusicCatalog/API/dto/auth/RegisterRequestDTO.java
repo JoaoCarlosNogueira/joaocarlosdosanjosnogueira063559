@@ -1,11 +1,11 @@
-package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.auth;
+package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.dto.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public class RegisterRequest {
+public class RegisterRequestDTO {
     @NotBlank(message = "O nome não pode estar em branco")
     @Size(min = 3, max = 100, message = "O nome deve ter entre 3 e 100 caracteres")
     @Schema(example = "= Carlos Nogueira")
@@ -23,10 +23,10 @@ public class RegisterRequest {
 
     @Schema(example = "USER", description = "Papel do usuário no sistema (USER ou ADMIN)")
     private String role;
-    public RegisterRequest() {
+    public RegisterRequestDTO() {
     }
 
-    public RegisterRequest(String name, String email, String password, String role) {
+    public RegisterRequestDTO(String name, String email, String password, String role) {
         this.name = name;
         this.email = email;
         this.password = password;

@@ -1,18 +1,18 @@
-package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.auth;
+package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.dto.auth;
 
-public class AuthenticationResponse {
+public class AuthenticationResponseDTO {
     private String accessToken;
     private String refreshToken;
 
-    public AuthenticationResponse() {
+    public AuthenticationResponseDTO() {
     }
 
-    public AuthenticationResponse(String accessToken, String refreshToken) {
+    public AuthenticationResponseDTO(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
 
-    public AuthenticationResponse(String accessToken) {
+    public AuthenticationResponseDTO(String accessToken) {
         this.accessToken = accessToken;
     }
 

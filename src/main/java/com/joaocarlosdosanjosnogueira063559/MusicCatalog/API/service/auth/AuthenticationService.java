@@ -1,5 +1,8 @@
-package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.auth;
+package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.service.auth;
 
+import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.dto.auth.AuthenticationRequestDTO;
+import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.dto.auth.AuthenticationResponseDTO;
+import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.dto.auth.RegisterRequestDTO;
 import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.repository.UserRepository;
 import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.security.JwtService;
 import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.security.RefreshTokenService;
@@ -28,7 +31,7 @@ public class AuthenticationService {
         this.refreshTokenService = refreshTokenService;
     }
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public AuthenticationResponseDTO register(RegisterRequestDTO request) {
         if (repository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Usuário já cadastrado com este e-mail.");
         }
@@ -44,10 +47,10 @@ public class AuthenticationService {
         String jwtToken = jwtService.generateToken(user.getEmail());
         String refreshToken = refreshTokenService.createRefreshToken(user.getEmail()).getToken();
 
-        return new AuthenticationResponse(jwtToken, refreshToken);
+        return new AuthenticationResponseDTO(jwtToken, refreshToken);
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponseDTO authenticate(AuthenticationRequestDTO request) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -65,7 +68,7 @@ public class AuthenticationService {
         String jwtToken = jwtService.generateToken(user.getEmail());
         String refreshToken = refreshTokenService.createRefreshToken(user.getEmail()).getToken();
 
-        return new AuthenticationResponse(jwtToken, refreshToken);
+        return new AuthenticationResponseDTO(jwtToken, refreshToken);
     }
     public String generateToken(User user) {
         return jwtService.generateToken(user.getEmail());

@@ -1,10 +1,10 @@
-package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.auth;
+package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.dto.auth;
 
 
-public class RefreshRequest {
+public class RefreshRequestDTO {
     private String refreshToken;
 
-    public RefreshRequest() {}
+    public RefreshRequestDTO() {}
 
     public String getRefreshToken() {
         return refreshToken;

@@ -1,10 +1,10 @@
-package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.auth;
+package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.dto.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public class AuthenticationRequest {
+public class AuthenticationRequestDTO {
 
     @NotBlank(message = "O e-mail é obrigatório")
     @Email(message = "O e-mail deve estar em um formato válido")
@@ -15,10 +15,10 @@ public class AuthenticationRequest {
     @Schema(example = "senha123")
     private String password;
 
-    public AuthenticationRequest() {
+    public AuthenticationRequestDTO() {
     }
 
-    public AuthenticationRequest(String email, String password) {
+    public AuthenticationRequestDTO(String email, String password) {
         this.email = email;
         this.password = password;
     }
