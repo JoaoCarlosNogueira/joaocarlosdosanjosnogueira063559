@@ -2,6 +2,7 @@ package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.auth;
 
 import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.repository.UserRepository;
 import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.security.JwtService;
+import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.security.RefreshTokenService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,19 +16,19 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-
+    private final RefreshTokenService refreshTokenService;
     public AuthenticationService(UserRepository repository,
                                  PasswordEncoder passwordEncoder,
                                  JwtService jwtService,
-                                 AuthenticationManager authenticationManager) {
+                                 AuthenticationManager authenticationManager,RefreshTokenService refreshTokenService) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.refreshTokenService = refreshTokenService;
     }
 
     public AuthenticationResponse register(RegisterRequest request) {
-
         if (repository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Usuário já cadastrado com este e-mail.");
         }
@@ -41,7 +42,9 @@ public class AuthenticationService {
         repository.save(user);
 
         String jwtToken = jwtService.generateToken(user.getEmail());
-        return new AuthenticationResponse(jwtToken);
+        String refreshToken = refreshTokenService.createRefreshToken(user.getEmail()).getToken();
+
+        return new AuthenticationResponse(jwtToken, refreshToken);
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -60,6 +63,11 @@ public class AuthenticationService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado após autenticação."));
 
         String jwtToken = jwtService.generateToken(user.getEmail());
-        return new AuthenticationResponse(jwtToken);
+        String refreshToken = refreshTokenService.createRefreshToken(user.getEmail()).getToken();
+
+        return new AuthenticationResponse(jwtToken, refreshToken);
+    }
+    public String generateToken(User user) {
+        return jwtService.generateToken(user.getEmail());
     }
 }
