@@ -1,4 +1,4 @@
-package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.Teste;
+package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.Teste.unit;
 
 import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.service.ArtistService;
 import org.junit.jupiter.api.DisplayName;
