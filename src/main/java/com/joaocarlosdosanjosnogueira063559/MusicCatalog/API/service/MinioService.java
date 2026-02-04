@@ -1,5 +1,6 @@
 package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.service;
 
+import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.service.storage.FileStorage;
 import io.minio.*;
 import io.minio.http.Method;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +14,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class MinioService {
+public class MinioService implements FileStorage {
 
     private final MinioClient minioClient;
 
