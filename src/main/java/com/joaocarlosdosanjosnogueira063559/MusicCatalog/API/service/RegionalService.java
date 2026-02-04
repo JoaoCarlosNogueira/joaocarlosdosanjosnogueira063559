@@ -5,6 +5,7 @@ import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.entity.Regional;
 import com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.repository.RegionalRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,11 +20,13 @@ import java.util.Optional;
 public class RegionalService {
     private final RegionalRepository repository;
     private final RestTemplate restTemplate;
+    @Value("${api.argus.url}")
+    private String argusUrl;
 
     @Transactional
     public void syncRegionais() {
-        String url = "https://integrador-argus-api.geia.vip/v1/regionais";
-        RegionalExternalDTO[] response = restTemplate.getForObject(url, RegionalExternalDTO[].class);
+
+        RegionalExternalDTO[] response = restTemplate.getForObject(argusUrl, RegionalExternalDTO[].class);
 
         if (response == null) return;
 
