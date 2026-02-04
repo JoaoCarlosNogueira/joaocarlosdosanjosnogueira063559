@@ -1,4 +1,4 @@
-package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.config.web;
+package com.joaocarlosdosanjosnogueira063559.MusicCatalog.API.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
