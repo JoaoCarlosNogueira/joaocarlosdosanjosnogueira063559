@@ -1,0 +1,4 @@
+CREATE TABLE tb_artist (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
